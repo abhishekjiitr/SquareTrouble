@@ -3,6 +3,7 @@ package Main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.ItemSelectable;
 import java.awt.Toolkit;
 import java.awt.Color;
@@ -53,11 +54,13 @@ class nJButton extends JButton
 	}
 public class StartScreen extends JFrame implements ActionListener,WindowListener,ItemSelectable, ListDataListener, Accessible
 	{
-
+		ImageIcon X;
+		JLabel label;
 		JButton start, exit;
 		Connection con;
 		StartScreen()
 		{
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			System.out.println(con);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			//MAIN PANEL
@@ -65,62 +68,74 @@ public class StartScreen extends JFrame implements ActionListener,WindowListener
 			setLayout(null);
 			add(pnl);
 			pnl.setLayout(null);
-			pnl.setBounds(0, 0, 1366, 768);
-			pnl.setBackground(Color.gray);
+		    setBounds(0, 0, (int) dim.getWidth(), (int) dim.getHeight());	
+			pnl.setBounds(0, 0, (int) dim.getWidth(), (int) dim.getHeight());	
+			// Main Label
+			//Image bg = Toolkit.getDefaultToolkit().createImage("/ti.jpg");
+			X=new ImageIcon(Main.class.getResource("/game_bg.jpg"));
+			Image img = X.getImage();
+			Image newimg = img.getScaledInstance((int) dim.getWidth(), (int) dim.getHeight(), java.awt.Image.SCALE_SMOOTH);
+			X = new ImageIcon(newimg);
+			label = new JLabel(X);
+			
+			label.setBounds(0, 0, (int) dim.getWidth(), (int) dim.getHeight());	
 			//MAIN WINDOW
 			setUndecorated(true);
 			// Comment it finally 
-			getRootPane().setWindowDecorationStyle(JRootPane.WARNING_DIALOG);
-			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			//getRootPane().setWindowDecorationStyle(JRootPane.WARNING_DIALOG);
 		    setBounds(0, 0, (int) dim.getWidth(), (int) dim.getHeight());
 		    System.out.println(dim.getHeight());
 			setVisible(true);
 			this.setTitle("Square Trouble");
 			this.setBackground(Color.BLACK);
-			//TOP LABEL
-			ImageIcon prizeIcon = new ImageIcon("Images//prize.jpg");
-			JLabel Lprizes = new JLabel();
-			Lprizes.setIcon(prizeIcon);
-			pnl.add(Lprizes);
-			Lprizes.setBounds(373,10, 650,190);
-			Lprizes.setOpaque(false);
 		    //Lprizes.setContentAreaFilled(false);
 		    //Lprizes.setBorderPainted(false);
 			
 			//Main Panel
-			JPanel Main = new JPanel();
-			Main.setBackground(Color.getHSBColor( 94, 72, 1));
-			pnl.add(Main);
-			Main.setLayout(null);
-			Main.setBounds(400, 50, 500, 500);
+			//JPanel Main = new JPanel();
+			//Main.setBackground(Color.getHSBColor( 94, 72, 1));
+			//pnl.add(Main);
+			//Main.setLayout(null);
+			//Main.setBounds(400, 50, 500, 500);
 			//UPPER HALF
-			JLabel l1 = new JLabel("Position");
 			Font fon = new Font("Courier New", Font.ITALIC, 16);
-			l1.setFont(fon);
-			l1.setBounds(30, 50, 250, 30);
+			//l1.setFont(fon);
+			//l1.setBounds(30, 50, 250, 30);
 			// Buttons
 			// Start Button
-			start = new JButton("Start");
-			Main.add(start);
-			start.setBounds(100, 50, 100, 100);
+			
+			start = new JButton(new ImageIcon((new ImageIcon(Main.class.getResource("/start.png"))).getImage().getScaledInstance(200, 100, java.awt.Image.SCALE_SMOOTH)));
+			pnl.add(start);
+			start.setBounds(500, 90, 300, 200);
 			// Action
 			start.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println("Start");
 					PlayerInfo pInfo = new PlayerInfo();
+					dispose();
 				}
 			});
 			//Exit Button
-			exit = new JButton("Exit");
-			Main.add(exit);
-			exit.setBounds(100, 170, 100, 100);
+			exit = new JButton(new ImageIcon((new ImageIcon(Main.class.getResource("/exit.png"))).getImage().getScaledInstance(200, 100, java.awt.Image.SCALE_SMOOTH)));
+			pnl.add(exit);
+			exit.setBounds(500, 310, 300, 200);
+			exit.setBorderPainted(false);
+			exit.setContentAreaFilled(false);
+			//exit.setFocusPainted(false);
+			exit.setOpaque(false);
 			// Action
 			exit.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e){
-					System.out.println("Exit");
+					System.exit(0);
+					dispose();
 				}
 			});
+			pnl.add(label);
+			start.setVisible(true);
+			exit.setVisible(true);
+			//start.paintAll(Graphics.class);
+			exit.repaint();
 			//Main.add(pos);
 		}
 		public void actionPerformed(ActionEvent arg0) {}

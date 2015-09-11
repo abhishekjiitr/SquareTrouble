@@ -2,14 +2,19 @@ package Main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
@@ -18,15 +23,33 @@ public class Game  {
 	static int clicksLeft = 9;
 	public static int player = 0;
 	JPanel pnl = new JPanel();
+	JPanel pnl2 = new JPanel();
+	static JLabel turn = new JLabel();
 	XOButton buttons[]=new XOButton[9];
 	static XOButton Bgrid[][];
 	Game() {
-		
+		if ( PlayerInfo.p1name == "" )
+		{
+			PlayerInfo.p1name = "Player 1";
+		}
+		if ( PlayerInfo.p2name == "" )
+		{
+			PlayerInfo.p2name = "Player 2";
+		}
+		Font fon = new Font("Courier New", Font.ITALIC, 35);
+		Game.turn.setText(PlayerInfo.p1name + "'s Turn");
 		Bgrid = new XOButton[3][3]; 
 		// FRAME
 		// the frame that contains the components
 		JFrame frame = new JFrame("SQUARE TROUBLE");
-		frame.getRootPane().setWindowDecorationStyle(JRootPane.WARNING_DIALOG);
+		frame.add(pnl2);
+		pnl2.setBounds(900, 100, 400, 400);
+		//pnl2.setBackground(Color.BLUE);
+		pnl2.add(turn);
+		pnl2.setLayout(null);
+		turn.setFont(fon);
+		turn.setBounds(50, 100, 400, 100);
+		//frame.getRootPane().setWindowDecorationStyle(JRootPane.WARNING_DIALOG);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setUndecorated(true);
 	    frame.setBounds(0, 0, (int) dim.getWidth(), (int) dim.getHeight());
@@ -48,6 +71,20 @@ public class Game  {
 	    	}
 	    }
 	    frame.setVisible(true);
+	    JPanel pnl2=new JPanel();
+	    pnl2.setBounds(800,800,60,60);
+	    pnl2.setVisible(true);
+	    JButton start = new JButton("Restart");
+		pnl2.add(start);
+		start.setBounds(500, 90, 300, 200);
+		// Action
+		start.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Restart");
+				new Game();
+			}
+		});
 	}
 }
 class XOButton extends JButton implements ActionListener{
@@ -62,6 +99,7 @@ class XOButton extends JButton implements ActionListener{
 		this.addActionListener(this);
 	}
 	public XOButton(int i, int j) {
+		setFocusPainted(false);
 		x = i;
 		y = j;
 		X=new ImageIcon(Main.class.getResource("/X.png"));
@@ -78,6 +116,17 @@ class XOButton extends JButton implements ActionListener{
 	}
 	public void actionPerformed(ActionEvent a) {
 		XOButton[][] Bgrid = Game.Bgrid;
+		String name;
+		if ( Game.player % 2 == 1 )
+		{
+			name = PlayerInfo.p1name;
+		}
+		else
+		{
+			name = PlayerInfo.p2name;
+		}
+		String text = name + "'s Turn";
+		Game.turn.setText(text);
 		if ( flag == 0 )
 			{
 				setImg(Game.player);
@@ -99,9 +148,18 @@ class XOButton extends JButton implements ActionListener{
 				}
 				if ( Game.clicksLeft <= 0 )
 				{
-					JOptionPane.showMessageDialog(null,"FUCK YOU NIGGA"+(Game.player+1) + " Congrats P2(BITCH!)","TITLE",JOptionPane.WARNING_MESSAGE);
-					//JOptionPane.showMessageDialog(getComponent(0), "FUCK YOU ");
-					System.out.println("Player "+(Game.player+1)+" wins!! Congrats Noobie...");
+					String winner;
+					if ( Game.player == 0 )
+					{
+						winner = PlayerInfo.p1name;
+					}
+					else
+					{
+						winner = PlayerInfo.p2name;
+					}
+					System.out.println( winner +" wins!! ");
+					JOptionPane.showMessageDialog(null,winner +" wins!! ","TITLE",JOptionPane.WARNING_MESSAGE);
+					System.exit(1);
 				}
 				Game.player = (Game.player+1) % 2;
 			}
